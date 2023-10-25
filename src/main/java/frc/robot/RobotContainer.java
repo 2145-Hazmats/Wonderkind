@@ -12,7 +12,6 @@ import frc.robot.subsystems.DrivetrainProfiledPID;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ElevatorProfiledPID;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -26,9 +25,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
 
-private static SendableChooser<Command> autoChooser;
+  //public static SendableChooser<Command> autoChooser;
+  public SendableChooser<Command> m_Chooser = new SendableChooser<>();
+  //autoChooser = new SendableChooser<Command>();
 
-//SendableChooser<Command> m_chooser = new SendableChooser<>();
   // The robot's subsystems and commands are defined here...
   private final Drivetrain m_Drivetrain = new Drivetrain();
   private final Claw m_Claw = new Claw();
@@ -40,8 +40,10 @@ private static SendableChooser<Command> autoChooser;
   public static ElevatorProfiledPID m_ElevatorProfiledPID = new ElevatorProfiledPID();
   public static DrivetrainProfiledPID m_DrivetrainProfiledPID = new DrivetrainProfiledPID();
 
-  
-//m_chooser.setDefaultOption("Simple Auto", m_simple Auto);
+  // Auto commands
+  public final Command ChoicePlayLeaveAndDock = new PlayLeaveAndDock(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPID);
+  public final Command ChoicePlayAndLeave = new PlayAndLeave(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPID);
+  public final Command ChoicePlayAndDock = new PlayAndDock(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPID);
   
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -120,24 +122,16 @@ private static SendableChooser<Command> autoChooser;
     m_coDriverController.povLeft().onTrue(new GrabAndGo(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID));
   }
   
-  private final Command ChoicePlayLeaveAndDock = new PlayLeaveAndDock(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPID);
-  private final Command ChoicePlayAndLeave = new PlayAndLeave(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPID);
-  private final Command ChoicePlayAndDock = new PlayAndDock(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPID);
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    autoChooser = new SendableChooser<Command>();
-    autoChooser.setDefaultOption("Play Leave And Dock!!!", ChoicePlayLeaveAndDock);
-    autoChooser.addOption("Play Piece NO DOCK", ChoicePlayAndLeave);
-    autoChooser.addOption("Play Piece ONLY DOCK", ChoicePlayAndDock);
-    SmartDashboard.putData("AUTONPICKER", autoChooser);
     //return new PlayAndLeave(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPID);
     // PlayAndDock NOT TESTED !
     //return new PlayAndDock(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPID);
     //return new PlayLeaveAndDock(m_Drivetrain, m_Elevator, m_Claw, m_ElevatorProfiledPID, m_DrivetrainProfiledPID);
-    return autoChooser.getSelected();
+    return m_Chooser.getSelected();
   }
 }
